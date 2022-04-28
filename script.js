@@ -25,8 +25,60 @@ class App {
         this.$sidebar = document.querySelector(".sidebar");
         this.$sidebarItem = document.querySelector(".active-item");
 
+        this.$app = document.querySelector("#app");
+        this.$firebaseAuthContainer = document.querySelector("#firebaseui-auth-container");
+        this.$authUserText = document.querySelector(".authUser");
+        this.$logoutUser = document.querySelector(".logout");
+        // Initialize the FirebaseUI Widget using Firebase.
+        // Initialize the FirebaseUI Widget using Firebase.
+    
+        this.ui = new firebaseui.auth.AuthUI(firebase.auth());
+        this.handleAuth();
         this.addEventListeners();
         this.displayNotes();
+    }
+
+    handleAuth(){
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              // User is signed in, see docs for a list of available properties
+              // https://firebase.google.com/docs/reference/js/firebase.User
+              this.redirectToApp();
+              this.$authUserText.innerHTML = user.displayName;
+              var uid = user.uid;
+              // ...
+            } else {
+              // User is signed out
+              // ...
+              this.redirectToAuth();
+            }
+          });
+    }
+
+    redirectToApp(){
+        this.$app.style.display = "block";
+        this.$firebaseAuthContainer.style.display = "none";
+    }
+    redirectToAuth(){
+        this.$app.style.display = "none";
+        this.ui.start('#firebaseui-auth-container', {
+            signInOptions: [
+              firebase.auth.EmailAuthProvider.PROVIDER_ID,
+              firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            ],
+            // Other config options...
+          });
+        this.$firebaseAuthContainer.style.display = "block";
+    }
+
+    handlesignOut(){
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            this.redirectToAuth
+          }).catch((error) => {
+            // An error happened.
+            console.log('Error Ocurred', error);
+          });
     }
 
     addEventListeners() {
@@ -59,6 +111,10 @@ class App {
         this.$sidebar.addEventListener("mouseout", (event) => {
             this.handleToggleSidebar();
         });
+
+        this.$logoutUser.addEventListener('click', (event)=>{
+            this.handlesignOut();
+        })
     }
 
     handleFormClick(event) {

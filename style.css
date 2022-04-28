@@ -6,6 +6,9 @@
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
 }
+#app{
+  display: none;
+}
 /* HOVER EFFECTS */
 
 .material-icons-outlined {
@@ -89,6 +92,16 @@ input:focus {
 
 .profile-actions-area {
   display: flex;
+}
+
+.profile-actions-area .tooltip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.authUser{
+  cursor: pointer;
 }
 
 /* MAIN SECTION STYLES */
