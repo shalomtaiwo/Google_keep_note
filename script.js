@@ -43,8 +43,6 @@ class App {
             if (user) {
               // User is signed in, see docs for a list of available properties
               // https://firebase.google.com/docs/reference/js/firebase.User
-              this.redirectToApp();
-              this.$authUserText.innerHTML = user.displayName;
               var uid = user.uid;
               // ...
             } else {
@@ -62,6 +60,16 @@ class App {
     redirectToAuth(){
         this.$app.style.display = "none";
         this.ui.start('#firebaseui-auth-container', {
+            callbacks: {
+                signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+                  // User successfully signed in.
+                  // Return type determines whether we continue the redirect automatically
+                  // or whether we leave that to developer to handle.
+                  this.redirectToApp();
+                  this.$authUserText.innerHTML = user.displayName;
+                  return true;
+                }
+              },
             signInOptions: [
               firebase.auth.EmailAuthProvider.PROVIDER_ID,
               firebase.auth.GoogleAuthProvider.PROVIDER_ID
